@@ -1,0 +1,102 @@
+Lab 3—Model selection
+================
+
+Learning objectives.
+
+  - Perform model selection in `R`.
+  - Write `R` functions.
+
+### Analysis
+
+1.  Write and R function `Rsq` to compute \(R^2\). The function should
+    take two vector arguments `observed` and `predicted` and return
+    \(R^2\). Note that the same function should be able to compute
+    training or test \(R^2\)s, depending on whether `predicted` is the
+    vector of predicted values for the training or the testing set as
+    the \(R^2\) formula is the same.
+
+2.  Percent of body fat is a health indicator that can be measured by
+    relatively costly methods such as underwater weighing
+    (gold-standard) and dual energy x-ray absorptiometry. ([You can
+    check here to learn more about body fat and its
+    importance](http://halls.md/body-fat-percentage-formula/)) The goal
+    of this Lab problem is to develop a model for predicting body fat
+    based on readily available features like BMI, sex and age without
+    requiring involved and costly measurements.
+    
+    1.  Load the body fat data (posted on blackboard) using the
+        `read.csv` funtion. `read.csv` works just like `read.table` but
+        reads comma delimited files instead. Make sure you use the
+        `header = TRUE` option to read in the variable names in the
+        first row of the file.
+    2.  Check the structure of the body fat data with `head().` Notice
+        that there are missing values denoted as `NA`.
+    3.  For this Lab you will only use the 4 variables: total percent
+        body fat (`dxdtopf`), gender (`riagendr`), age in years
+        (`ridageyr`), and body mass index BMI (`bmxbmi`). Create a new
+        data.frame `body.fat4` with just these four variables. Hint: you
+        can extract named columns/variables from a data frame as
+        follows: `your.data.frame[, c('dxdtopf', 'riagendr', 'ridageyr',
+        'bmxbmi')]`
+    4.  Rename the variables to `body.fat`, `sex`, `age`, and `bmi`.
+        Hint: you can use: `colnames(body.fat4) <- c('body.fat', 'sex',
+        'age', 'bmi')`
+    5.  Recode `sex` as a factor variable (1=Male 2=Female) using
+        `factor`.
+    6.  How many observations/rows are there with no missing values in
+        *any* of the 4 variables (complete cases). Hint: use the
+        `complete.cases` function.
+    7.  Remove any incomplete cases. Hint: this is equivalent to
+        retaining only the complete cases.
+    8.  Split the data into a training (60%), validation (20%), and
+        testing set (20%) (set the seed with `set.seed(2018)` so the
+        split can be reproduced.)
+    9.  Fit the linear model `body.fat ~ bmi` using the training set.
+        Compute the training and validation RMSE and \(R^2\) using the
+        `rmse` function from the lecture and the `Rsq` function you
+        wrote.
+    10. Repeat i. for models with the following predictors:
+          - `bmi`, `age`, `sex`
+          - `bmi`, `bmi^2`, `age`, `age^2`, `sex`. (Remember you need to
+            enclose in transformed variables with `I()`,
+            e.g. `I(bmi^2)`). Would it make sense to include `sex^2`?
+            Which model would you choose? Compute final estimates of
+            prediction performance for your selected model using the
+            test data.
+    11. The body fat data in this Lab is from US individuals. Comment on
+        applying your selected model to predict/estimate % body fat in a
+        different population (e.g. Asia, Latin America)
+    12. The following prediction formulas for body fat were developed by
+        Deurenberg et. al (Br J Nutr. 1991 Mar;65(2):105-14) based on
+        N=1,229 Dutch subjects:
+
+<!-- end list -->
+
+  - \[ \text{Child body fat %} = 1.4 + 1.51 \times \mathrm{BMI} − 0.70 \times \mathrm{Age} − 3.6 \times \mathrm{Sex}  \]
+    
+      - for children aged 15 or less and
+
+  - \[ \text{Adult body fat %} = -5.4 + 1.20 \times \mathrm{BMI} + 0.23 \times \mathrm{Age} − 10.8 \times \mathrm{Sex} \]
+    
+      - for adolescents and adults 16 year of age or older, where
+
+  - \[\text{Sex} = \begin{cases}
+    0 & \text{if} \;\, \text{female} \\
+    1 & \text{if} \;\, \text{male}
+    \end{cases}\]
+    
+      - Use these formulas to predict body fat percentage in your
+        testing set and estimate the prediction metrics (RMSE and
+        \(R^2\)). Compare the quality of this prediction to that of the
+        selected model in j. above.
+
+<!-- end list -->
+
+3.  Repeat steps h-j using a different random split (set the seed to a
+    different value) into training (60%), validation (20%), and testing
+    set (20%). Do you get similar results? Do you choose the same model?
+    Are the final test prediction metrics (RMSE and \(R^2\) similar)?.
+    Comment on the reliability of splitting the data into training,
+    validation, and test to perform model selection when you have a
+    modest sample size. (Note: we’ll learn about cross validation, an
+    alternative approach for model selection later in the couse.)
